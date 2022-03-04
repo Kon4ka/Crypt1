@@ -1,0 +1,14 @@
+C:\Users\Kon4ka\source\repos\Crypt1\bin\Debug\netcoreapp3.1\Crypt1.exe
+C:\Users\Kon4ka\source\repos\Crypt1\bin\Debug\netcoreapp3.1\Crypt1.deps.json
+C:\Users\Kon4ka\source\repos\Crypt1\bin\Debug\netcoreapp3.1\Crypt1.runtimeconfig.json
+C:\Users\Kon4ka\source\repos\Crypt1\bin\Debug\netcoreapp3.1\Crypt1.runtimeconfig.dev.json
+C:\Users\Kon4ka\source\repos\Crypt1\bin\Debug\netcoreapp3.1\Crypt1.dll
+C:\Users\Kon4ka\source\repos\Crypt1\bin\Debug\netcoreapp3.1\Crypt1.pdb
+C:\Users\Kon4ka\source\repos\Crypt1\obj\Debug\netcoreapp3.1\Crypt1.csproj.AssemblyReference.cache
+C:\Users\Kon4ka\source\repos\Crypt1\obj\Debug\netcoreapp3.1\Crypt1.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Kon4ka\source\repos\Crypt1\obj\Debug\netcoreapp3.1\Crypt1.AssemblyInfoInputs.cache
+C:\Users\Kon4ka\source\repos\Crypt1\obj\Debug\netcoreapp3.1\Crypt1.AssemblyInfo.cs
+C:\Users\Kon4ka\source\repos\Crypt1\obj\Debug\netcoreapp3.1\Crypt1.csproj.CoreCompileInputs.cache
+C:\Users\Kon4ka\source\repos\Crypt1\obj\Debug\netcoreapp3.1\Crypt1.dll
+C:\Users\Kon4ka\source\repos\Crypt1\obj\Debug\netcoreapp3.1\Crypt1.pdb
+C:\Users\Kon4ka\source\repos\Crypt1\obj\Debug\netcoreapp3.1\Crypt1.genruntimeconfig.cache
