@@ -25,12 +25,14 @@ namespace Crypt1
                 { 8, 15},
             };
 
+            ulong key = 2048 + 11;
             int k = 4;
 
             try
             {
                 var res_S = alg.S_Change(orig2, s_block2, k);
                 var res = alg.P_Change(orig1, p_block);
+                var resround = alg.Round_Keys(BitConverter.GetBytes(key));
                 foreach (var @byte in res)
                 {
                     Console.WriteLine("result P: {0}", Convert.ToString(@byte, 2));
