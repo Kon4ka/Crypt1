@@ -9,7 +9,7 @@ namespace Crypt1
         {
             Crypt_alg alg = new Crypt_alg();
             byte[] orig1 = { 2, 8, 6};
-            int[,] p_block = { { 6, 1, 2, 3, 4, 5, 12, 6 }, { 0, 1, 2, 3, 4, 5, 6, 7 } };
+            int[,] p_block = { { 6, 1, 2, 3, 4, 5, 12, 6 }, { 0, 1, 2, 3, 4, 5, 6, 7 } }; //Todo +1 all
 
             var s_block1 = new Dictionary<byte, byte>()
             {
@@ -25,7 +25,7 @@ namespace Crypt1
                 { 8, 15},
             };
 
-            ulong key = 2048 + 11;
+            ulong key = 2048 + 71;
             int k = 4;
 
             try
