@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using Microsoft.Win32;
+using Crypt1.Algo_Parts;
 
 namespace Crypt1
 {
@@ -18,7 +21,7 @@ namespace Crypt1
                 { 4, 5}
             };
 
-            byte[] orig2 = { 255, 200, 135 };
+            byte[] orig2 = { 255, 200, 135, 15, 255, 200, 135, 15 };
             var s_block2 = new Dictionary<byte, byte>()
             {
                 { 15, 9},
@@ -30,17 +33,27 @@ namespace Crypt1
 
             try
             {
-                var res_S = alg.S_Change(orig2, s_block2, k);
-                var res = alg.P_Change(orig1, p_block);
-                var resround = alg.Round_Keys(BitConverter.GetBytes(key));
-                foreach (var @byte in res)
+                
+                //var res_S = Crypt_alg.S_Change(orig1, s_block1, k);
+                var rest = Crypt_alg.P_Change(orig1, p_block);
+/*                foreach (var @byte in rest)
                 {
                     Console.WriteLine("result P: {0}", Convert.ToString(@byte, 2));
                 }
                 foreach (var @byte in res_S)
                 {
                     Console.WriteLine("result S: {0}", Convert.ToString(@byte, 2));
-                }
+                }*/
+                //Round_Generation a = new Round_Generation();
+                //var res = a.Round_Keys(ASCIIEncoding.ASCII.GetBytes("12345678"));
+
+
+
+                byte[] kk = ASCIIEncoding.ASCII.GetBytes("12345678");
+                DES d = new DES(Mode.ECB, kk);
+                byte[] word = ASCIIEncoding.ASCII.GetBytes("Baalt");
+                var shift = d.Encrypt(word);
+                var res = d.Decrypt(shift);
             }
             catch (Exception e)
             {

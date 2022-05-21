@@ -2,13 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Crypt1.Algo_Parts;
 
 namespace Crypt1
 {
     sealed class Crypt_alg
     {
         public Crypt_alg() { }
-        public byte[] P_Change(byte[] orig, int[,] p_block)
+
+        /*public static byte[] P_Change1(byte[] orig, int[,] p_block)
+        {
+            byte[] result = new byte[8];
+            int curind = 1;
+            foreach (int i in p_block)
+            {
+                SetFromPos(result, GetFromPos(orig, i+1), curind);
+                curind++;
+            }
+
+            return result;
+        }*/
+        //LAB1
+        public static byte[] P_Change(byte[] orig, int[,] p_block)
         {
             if (p_block is null || p_block.GetUpperBound(1) + 1 != 8) 
             {
@@ -18,8 +33,6 @@ namespace Crypt1
             int size = p_block.GetUpperBound(0) + 1;
 
             byte[] res = new byte[size];
-
-            //Console.WriteLine(Convert.ToString(orig[0], 2));
 
             for (int i = 0; i < size; i++)
             {
@@ -41,8 +54,8 @@ namespace Crypt1
 
             return res;
         }
-
-        public byte[] S_Change(byte[] some_orig, Dictionary<byte, byte> s_block, int k)
+        //LAB1 //Change name
+       /* public static byte[] S_Change1(byte[] some_orig, Dictionary<byte, byte> s_block, int k)
         {
             byte[] orig = new byte[some_orig.Length];
             Array.Copy(some_orig, orig, some_orig.Length);
@@ -54,7 +67,7 @@ namespace Crypt1
                 throw new ArgumentException("S Block is not for bytes or null");
             }
 
-            //Узнать какой байт на какой меняем
+            //Узнать какой бит на какой меняем
 
             for (int i = 0; i < orig.Length*8; i += k)
             {
@@ -94,7 +107,7 @@ namespace Crypt1
                 {
                     int to_start = (8 - k) - i % 8;
 
-                    if (s_block.ContainsKey(cur_k_part))
+                    if (s_block.ContainsKey(cur_k_part))        //Throw exeption arg out of range or not check
                     {
                         byte mask = 0;
                         byte new_b = (byte)(s_block[cur_k_part] << to_start);
@@ -113,10 +126,51 @@ namespace Crypt1
             }
 
             return orig;
+        }*/
+
+        public static byte[] S_Change(byte[] orig)
+        {
+            byte[] res = new byte[] { 0, 0, 0, 0 };
+
+            for (int i = 0; i < 8; i++)
+            {
+                var bit1 = GetFromPos(orig, i + 1) ? 2 : 0;
+                var bit6 = GetFromPos(orig, i + 6) ? 1 : 0;
+                var row = bit1 | bit6;
+
+                var bit2 = GetFromPos(orig, i + 2) ? 8 : 0;
+                var bit3 = GetFromPos(orig, i + 3) ? 4 : 0;
+                var bit4 = GetFromPos(orig, i + 4) ? 2 : 0;
+                var bit5 = GetFromPos(orig, i + 5) ? 1 : 0;
+                var col = bit2 | bit3 | bit4 | bit5;
+
+                int value = Matrix.S[i, 16 * row + col];
+                if (i % 2 == 0)
+                {
+                    res[i / 2] |= (byte)(value << 4);
+                }
+                else
+                {
+                    res[i / 2] |= (byte)(value);
+                }
+            }
+            return res;
         }
 
+        public static void SetFromPos(byte[] block, bool value, int pos)
+        {
+            if (value)
+                block[(pos - 1) / 8] |= (byte)(1 << (7 - (pos - 1) % 8));
+            else
+                block[(pos - 1) / 8] &= (byte)(~(1 << (7 - (pos - 1) % 8)));
+        }
 
-        public byte[][] Round_Keys(byte[] key)
+        public static bool GetFromPos(byte[] block, int pos)
+        {
+            return (block[(pos - 1) / 8] & (1 << (7 - (pos - 1) % 8))) != 0;
+        }
+
+        /*public byte[][] Round_Keys(byte[] key)
         {
             byte[][] after_shift = new byte[16][];
             byte[][] result = new byte[16][];
@@ -133,7 +187,7 @@ namespace Crypt1
                 throw new ArgumentException("Invalid key lenght");
             }
             int[] move = { 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1 };
-            /*            int[,] p64_to_56 = {{ 57, 49, 41, 33, 25, 17, 9, 1 }, 
+            *//*            int[,] p64_to_56 = {{ 57, 49, 41, 33, 25, 17, 9, 1 }, 
                                             { 58, 50, 42, 34, 26, 18, 10, 2},
                                             { 59, 51, 43, 35, 27, 19, 11, 3},
                                             { 60, 52, 44, 36, 63, 55, 47, 39},
@@ -145,7 +199,7 @@ namespace Crypt1
                                             {26, 8, 16, 7, 27, 20, 13, 2},
                                             {41, 52, 31, 37, 47, 55, 30, 40 },
                                             {51, 45, 33, 48, 44, 49, 39, 56 },
-                                            {34, 53, 46, 42, 50, 36, 29, 32}};*/
+                                            {34, 53, 46, 42, 50, 36, 29, 32}};*//*
             int[,] p64_to_56 = {{56,48,40,32,24,16,8,0},
                                 {57,49,41,33,25,17,9,1},
                                 {58,50,42,34,26,18,10,2},
@@ -160,7 +214,7 @@ namespace Crypt1
                                 {50,44,32,47,43,48,38,55},
                                 {33,52,45,41,49,35,28,31,}};
 
-/*            for (int i = 0; i < p56_to_48.GetUpperBound(0)+1; i++)
+*//*            for (int i = 0; i < p56_to_48.GetUpperBound(0)+1; i++)
             {
                 Console.Write("{");
                 for (int j = 0; j < p56_to_48.GetUpperBound(1)+1; j++)
@@ -168,7 +222,7 @@ namespace Crypt1
                     Console.Write(p56_to_48[i, j]-1 + ",");
                 }
                 Console.Write("},\n");
-            }*/
+            }*//*
                 byte[] key_56 = P_Change(key, p64_to_56);
             //ulong ukey = BitConverter.ToUInt64(key_56);
             byte[] D = { 0, 0, 0, 0 };
@@ -211,12 +265,8 @@ namespace Crypt1
             }
 
                 return result;
-        }
+        }*/
 
-        /// <summary>
-        /// Rotates the bits in an array of bytes to the left.
-        /// </summary>
-        /// <param name="bytes">The byte array to rotate.</param>
         public static void RotateLeft(byte[] bytes, bool is_rotatable_first_4)
         {
             bool carryFlag = ShiftLeft(bytes, is_rotatable_first_4);
@@ -227,10 +277,6 @@ namespace Crypt1
             }
         }
 
-        /// <summary>
-        /// Rotates the bits in an array of bytes to the right.
-        /// </summary>
-        /// <param name="bytes">The byte array to rotate.</param>
         public static void RotateRight(byte[] bytes, bool is_rotatable_first_4)
         {
             bool carryFlag = ShiftRight(bytes);
@@ -244,10 +290,6 @@ namespace Crypt1
             }
         }
 
-        /// <summary>
-        /// Shifts the bits in an array of bytes to the left.
-        /// </summary>
-        /// <param name="bytes">The byte array to shift.</param>
         public static bool ShiftLeft(byte[] bytes, bool is_rotatable_first_4)
         {
             bool leftMostCarryFlag = false;
@@ -286,10 +328,6 @@ namespace Crypt1
             return leftMostCarryFlag;
         }
 
-        /// <summary>
-        /// Shifts the bits in an array of bytes to the right.
-        /// </summary>
-        /// <param name="bytes">The byte array to shift.</param>
         public static bool ShiftRight(byte[] bytes)
         {
             bool rightMostCarryFlag = false;
@@ -319,5 +357,34 @@ namespace Crypt1
 
             return rightMostCarryFlag;
         }
+
+        public static byte[] XOR(byte[] part1, byte[] part2)
+        {
+            var size = Math.Min(part1.Length, part2.Length);
+            byte[] result = new byte[size];
+            for (int i = 0; i < size; i++)
+            {
+                result[i] = (byte)(part1[i] ^ part2[i]);
+            }
+            return result;
+        }
+    }
+
+
+    //LAB1
+    public interface IRound_generation
+    {
+        public byte[][] Round_Keys(byte[] key);
+    }
+
+    public interface IF_function
+    {
+        byte[] transform(byte[] block, byte[] round_key);
+    }
+
+    public interface ISym_encrypt
+    {
+        byte[] encrypt(byte[] block);   // без _. С заглав буквы
+        byte[] decrypt(byte[] block);
     }
 }
