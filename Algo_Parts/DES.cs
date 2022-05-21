@@ -145,8 +145,8 @@ namespace Crypt1.Algo_Parts
                     break;
                 }
             }
-            byte[] outdata = new byte[i];
-            for (int j = 0; j < i; j++)
+            byte[] outdata = new byte[data.Length - i];
+            for (int j = 0; j < data.Length - i; j++)
                 outdata[j] = data[j];
             return outdata;
         }

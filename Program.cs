@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Win32;
 using Crypt1.Algo_Parts;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Crypt1
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Crypt_alg alg = new Crypt_alg();
             byte[] orig1 = { 2, 8, 6};
@@ -34,26 +36,34 @@ namespace Crypt1
             try
             {
                 
-                //var res_S = Crypt_alg.S_Change(orig1, s_block1, k);
                 var rest = Crypt_alg.P_Change(orig1, p_block);
-/*                foreach (var @byte in rest)
-                {
-                    Console.WriteLine("result P: {0}", Convert.ToString(@byte, 2));
-                }
-                foreach (var @byte in res_S)
-                {
-                    Console.WriteLine("result S: {0}", Convert.ToString(@byte, 2));
-                }*/
-                //Round_Generation a = new Round_Generation();
-                //var res = a.Round_Keys(ASCIIEncoding.ASCII.GetBytes("12345678"));
-
 
 
                 byte[] kk = ASCIIEncoding.ASCII.GetBytes("12345678");
                 DES d = new DES(Mode.ECB, kk);
                 byte[] word = ASCIIEncoding.ASCII.GetBytes("Baalt");
-                var shift = d.Encrypt(word);
+                string path = Directory.GetCurrentDirectory()+ "/2bildscet2.png";
+                string path1 = Directory.GetCurrentDirectory() + "/2bildscet2Crypt.png";
+                byte[] buffer;
+
+                using (FileStream fstream = File.OpenRead(path))
+                {
+                    buffer = new byte[fstream.Length];
+                    await fstream.ReadAsync(buffer, 0, buffer.Length);
+                    // декодируем байты в строку
+                    //string textFromFile = Encoding.Default.GetString(buffer);
+                    //Console.WriteLine($"Текст из файла: {textFromFile}");
+                }
+                var shift = d.Encrypt(buffer);
                 var res = d.Decrypt(shift);
+
+                using (FileStream fstream = new FileStream(path1, FileMode.OpenOrCreate))
+                {
+                    // запись массива байтов в файл
+                    await fstream.WriteAsync(res, 0, res.Length);
+                    Console.WriteLine("Текст записан в файл");
+                }
+
             }
             catch (Exception e)
             {
