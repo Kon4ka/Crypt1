@@ -5,6 +5,7 @@ using Microsoft.Win32;
 using Crypt1.Algo_Parts;
 using System.IO;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace Crypt1
 {
@@ -41,7 +42,15 @@ namespace Crypt1
 
                 byte[] kk = ASCIIEncoding.ASCII.GetBytes("12345678");
                 DES d = new DES(Mode.ECB, kk);
+                DES dcbc = new DES(Mode.CFB, kk);
                 byte[] word = ASCIIEncoding.ASCII.GetBytes("Baalt");
+
+                dcbc.SetIV();
+                var en = dcbc.Encrypt(word);
+                var de = dcbc.Decrypt(en);
+
+                string wordstr = ASCIIEncoding.ASCII.GetString(de);
+
                 string path = Directory.GetCurrentDirectory()+ "/2bildscet2.png";
                 string path1 = Directory.GetCurrentDirectory() + "/2bildscet2Crypt.png";
                 byte[] buffer;

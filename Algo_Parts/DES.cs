@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace Crypt1.Algo_Parts
@@ -9,6 +10,7 @@ namespace Crypt1.Algo_Parts
         private Mode crypt_mode;
         private byte[] crypt_key;
         private ISym_encrypt algorytm;
+        public byte[] InVector;
 
         public DES (Mode m, byte[] k, params object[] other)
         {
@@ -17,6 +19,18 @@ namespace Crypt1.Algo_Parts
             algorytm = new Feistel(new Round_Generation(), 
                                    new F_Function(),
                                    crypt_key);
+        }
+
+        public void SetIV ()
+        {
+            byte[] count = new byte[64 / 8]; //генерация числа с условием 0...1 - нечетное и неотрицательное
+            Random r = new Random();
+            r.NextBytes(count);
+
+                count[0] = (byte)((int)count[0] | 1);
+
+                count[count.Length - 1] = (byte)((int)count[count.Length - 1] & 0);
+            InVector = count;
         }
 
         public byte[] Encrypt(byte[] Indata)
@@ -61,8 +75,79 @@ namespace Crypt1.Algo_Parts
                     }
                     break;
                 case Mode.CBC:
+                    {
+                        if (InVector == null)
+                            return null;
+                        byte[] block = new byte[8];
+                        int posinblock = 0;
+                        int posinOutData = 0;
+                        byte[] toXOR = InVector;
+                        byte[] tmp;
+
+                        for (int i = 0; i < eIndata.Length; i++)
+                        {
+                            block[posinblock] = eIndata[i];
+                            posinblock++;
+                            if (posinblock == 8)
+                            {
+                                posinblock = 0;
+                                tmp = Crypt_alg.XOR(toXOR, block);
+                                tmp = algorytm.encrypt(tmp);
+                                foreach (byte b in tmp)
+                                {
+                                    Outdata[posinOutData] = b;
+                                    posinOutData++;
+
+                                }
+                                toXOR = tmp;
+                            }
+                        }
+                    }
                     break;
                 case Mode.CFB:
+                    {
+                        if (InVector == null)
+                            return null;
+                        byte[] block = new byte[8];
+                        int posinblock = 0;
+                        int posinOutData = 0;
+                        byte[] toXOR = InVector;
+                        byte[] tmp = new byte[8];
+                        toXOR = algorytm.encrypt(toXOR);
+
+                        for (int i = 0; i < 8; i++)
+                        {
+                            block[posinblock] = eIndata[i];
+                            posinblock++;
+                        }
+                        toXOR = Crypt_alg.XOR(toXOR, block);
+                        foreach (byte b in toXOR)
+                        {
+                            Outdata[posinOutData] = b;
+                            posinOutData++;
+                        }
+                        block = toXOR;
+
+                        for (int i = 8; i < eIndata.Length; i++)
+                        {
+                            if (posinblock == 8)
+                            {
+                                posinblock = 0;
+                                block.CopyTo(tmp, 0);
+                                block = algorytm.encrypt(block);
+                                block = Crypt_alg.XOR(block, tmp);
+                                foreach (byte b in block)
+                                {
+                                    Outdata[posinOutData] = b;
+                                    posinOutData++;
+
+                                }
+                            }
+                            block[posinblock] = eIndata[i];
+                            posinblock++;
+
+                        }
+                    }
                     break;
                 case Mode.OFB:
                     break;
@@ -108,8 +193,79 @@ namespace Crypt1.Algo_Parts
                     }
                     break;
                 case Mode.CBC:
+                    {
+                        if (InVector == null)
+                            return null;
+                        byte[] block = new byte[8];
+                        int posinblock = 0;
+                        int posinoutdata = 0;
+                        byte[] toXOR = InVector;
+                        byte[] tmp;
+
+                        for (int i = 0; i < Indata.Length; i++)
+                        {
+                            block[posinblock] = Indata[i];
+                            posinblock++;
+                            if (posinblock == 8)
+                            {
+                                posinblock = 0;
+                                tmp = algorytm.decrypt(block);
+                                tmp = Crypt_alg.XOR(toXOR, tmp);
+                                foreach (byte b in tmp)
+                                {
+                                    Outdata[posinoutdata++] = b;
+                                }
+                                block.CopyTo(toXOR,0);
+
+                            }
+
+                        }
+                    }
                     break;
                 case Mode.CFB:
+                    {
+                        if (InVector == null)
+                            return null;
+                        byte[] block = new byte[8];
+                        int posinblock = 0;
+                        int posinOutData = 0;
+                        byte[] toXOR = InVector;
+                        byte[] tmp = new byte[8];
+                        toXOR = algorytm.encrypt(toXOR);
+
+                        for (int i = 0; i < 8; i++)
+                        {
+                            block[posinblock] = Indata[i];
+                            posinblock++;
+                        }
+                        toXOR = Crypt_alg.XOR(toXOR, block);
+                        foreach (byte b in toXOR)
+                        {
+                            Outdata[posinOutData] = b;
+                            posinOutData++;
+                        }
+                        block = toXOR;
+
+                        for (int i = 8; i < Indata.Length; i++)
+                        {
+                            if (posinblock == 8)
+                            {
+                                posinblock = 0;
+                                block.CopyTo(tmp, 0);
+                                block = algorytm.encrypt(block);
+                                block = Crypt_alg.XOR(block, tmp);
+                                foreach (byte b in block)
+                                {
+                                    Outdata[posinOutData] = b;
+                                    posinOutData++;
+
+                                }
+                            }
+                            block[posinblock] = Indata[i];
+                            posinblock++;
+
+                        }
+                    }
                     break;
                 case Mode.OFB:
                     break;
@@ -141,12 +297,12 @@ namespace Crypt1.Algo_Parts
                         if (data[j] != data[i])
                             is_padding = false;
                     }
-                    if (!is_padding) i = 0;
+                    if (!is_padding) i = data.Length;
                     break;
                 }
             }
-            byte[] outdata = new byte[data.Length - i];
-            for (int j = 0; j < data.Length - i; j++)
+            byte[] outdata = new byte[i];
+            for (int j = 0; j <i; j++)
                 outdata[j] = data[j];
             return outdata;
         }
