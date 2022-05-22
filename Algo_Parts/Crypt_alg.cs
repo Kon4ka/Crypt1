@@ -59,22 +59,22 @@ namespace Crypt1
                 var bit5 = GetFromPos(orig, i + 5) ? 1 : 0;
                 var col = bit2 | bit3 | bit4 | bit5;
 
-                int value = Matrix.S[i, 16 * row + col];
+                int number = Matrix.S[i, 16 * row + col];
                 if (i % 2 == 0)
                 {
-                    res[i / 2] |= (byte)(value << 4);
+                    res[i / 2] |= (byte)(number << 4);
                 }
                 else
                 {
-                    res[i / 2] |= (byte)(value);
+                    res[i / 2] |= (byte)(number);
                 }
             }
             return res;
         }
 
-        public static void SetFromPos(byte[] block, bool value, int pos)
+        public static void SetFromPos(byte[] block, bool number, int pos)
         {
-            if (value)
+            if (number)
                 block[(pos - 1) / 8] |= (byte)(1 << (7 - (pos - 1) % 8));
             else
                 block[(pos - 1) / 8] &= (byte)(~(1 << (7 - (pos - 1) % 8)));

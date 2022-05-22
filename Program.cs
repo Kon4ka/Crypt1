@@ -59,19 +59,20 @@ namespace Crypt1
                 {
                     buffer = new byte[fstream.Length];
                     await fstream.ReadAsync(buffer, 0, buffer.Length);
-                    // декодируем байты в строку
-                    //string textFromFile = Encoding.Default.GetString(buffer);
-                    //Console.WriteLine($"Текст из файла: {textFromFile}");
+
                 }
-                var shift = d.Encrypt(buffer);
+                // Кодировка изображения, раскоментить при необходимости
+                /*var shift = d.Encrypt(buffer);
                 var res = d.Decrypt(shift);
 
                 using (FileStream fstream = new FileStream(path1, FileMode.OpenOrCreate))
                 {
-                    // запись массива байтов в файл
+
                     await fstream.WriteAsync(res, 0, res.Length);
                     Console.WriteLine("Текст записан в файл");
-                }
+                }*/
+
+
 
             }
             catch (Exception e)
