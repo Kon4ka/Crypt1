@@ -9,7 +9,7 @@ namespace Crypt1.Algo_Parts
     {
         private Mode crypt_mode;
         private byte[] crypt_key;
-        private ISym_encrypt algorytm;
+        private ISym_Encrypt algorytm;
         public byte[] InVector;
 
         public DES (Mode m, byte[] k, params object[] other)
@@ -63,7 +63,7 @@ namespace Crypt1.Algo_Parts
                             if (posinblock == 8)
                             {
                                 posinblock = 0;
-                                block = algorytm.encrypt(block);
+                                block = algorytm.Encrypt(block);
                                 foreach (byte b in block)
                                 {
                                     Outdata[posinOutData] = b;
@@ -92,7 +92,7 @@ namespace Crypt1.Algo_Parts
                             {
                                 posinblock = 0;
                                 tmp = Crypt_alg.XOR(toXOR, block);
-                                tmp = algorytm.encrypt(tmp);
+                                tmp = algorytm.Encrypt(tmp);
                                 foreach (byte b in tmp)
                                 {
                                     Outdata[posinOutData] = b;
@@ -113,7 +113,7 @@ namespace Crypt1.Algo_Parts
                         int posinOutData = 0;
                         byte[] toXOR = InVector;
                         byte[] tmp = new byte[8];
-                        toXOR = algorytm.encrypt(toXOR);
+                        toXOR = algorytm.Encrypt(toXOR);
 
                         for (int i = 0; i < 8; i++)
                         {
@@ -134,7 +134,7 @@ namespace Crypt1.Algo_Parts
                             {
                                 posinblock = 0;
                                 block.CopyTo(tmp, 0);
-                                block = algorytm.encrypt(block);
+                                block = algorytm.Encrypt(block);
                                 block = Crypt_alg.XOR(block, tmp);
                                 foreach (byte b in block)
                                 {
@@ -181,7 +181,7 @@ namespace Crypt1.Algo_Parts
                             if (posinblock == 8)
                             {
                                 posinblock = 0;
-                                block = algorytm.decrypt(block);
+                                block = algorytm.Decrypt(block);
                                 foreach (byte b in block)
                                 {
                                     Outdata[posinoutdata++] = b;
@@ -209,7 +209,7 @@ namespace Crypt1.Algo_Parts
                             if (posinblock == 8)
                             {
                                 posinblock = 0;
-                                tmp = algorytm.decrypt(block);
+                                tmp = algorytm.Decrypt(block);
                                 tmp = Crypt_alg.XOR(toXOR, tmp);
                                 foreach (byte b in tmp)
                                 {
@@ -231,7 +231,7 @@ namespace Crypt1.Algo_Parts
                         int posinOutData = 0;
                         byte[] toXOR = InVector;
                         byte[] tmp = new byte[8];
-                        toXOR = algorytm.encrypt(toXOR);
+                        toXOR = algorytm.Encrypt(toXOR);
 
                         for (int i = 0; i < 8; i++)
                         {
@@ -252,7 +252,7 @@ namespace Crypt1.Algo_Parts
                             {
                                 posinblock = 0;
                                 block.CopyTo(tmp, 0);
-                                block = algorytm.encrypt(block);
+                                block = algorytm.Encrypt(block);
                                 block = Crypt_alg.XOR(block, tmp);
                                 foreach (byte b in block)
                                 {

@@ -6,6 +6,8 @@ using Crypt1.Algo_Parts;
 using System.IO;
 using System.Threading.Tasks;
 using System.Numerics;
+using Crypt1.RSA;
+using Crypt1.Prime;
 
 namespace Crypt1
 {
@@ -43,11 +45,15 @@ namespace Crypt1
                 byte[] kk = ASCIIEncoding.ASCII.GetBytes("12345678");
                 DES d = new DES(Mode.ECB, kk);
                 DES dcbc = new DES(Mode.CFB, kk);
+                RSAlg rsa = new RSAlg(0.98, 16, PrimeTestMode.Ferm);
                 byte[] word = ASCIIEncoding.ASCII.GetBytes("Baalt");
 
                 dcbc.SetIV();
                 var en = dcbc.Encrypt(word);
                 var de = dcbc.Decrypt(en);
+
+                var cryptstr = rsa.Encrypt("АРБУЗ");
+                var decryptstr = rsa.Decrypt(cryptstr);
 
                 string wordstr = ASCIIEncoding.ASCII.GetString(de);
 

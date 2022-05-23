@@ -200,9 +200,15 @@ namespace Crypt1
         byte[] transform(byte[] block, byte[] round_key);
     }
 
-    public interface ISym_encrypt
+    public interface ISym_Encrypt
     {
-        byte[] encrypt(byte[] block);   // без _. С заглав буквы
-        byte[] decrypt(byte[] block);
+        byte[] Encrypt(byte[] block);
+        byte[] Decrypt(byte[] block);
+    }
+
+    public interface CryptoAlgBase
+    {
+        string Encrypt(string data);
+        string Decrypt(string data);
     }
 }

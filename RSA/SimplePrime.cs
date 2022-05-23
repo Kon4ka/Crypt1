@@ -9,6 +9,11 @@ using System.Security.Cryptography;
 
 namespace Crypt1.Prime
 {
+    internal interface IPrime
+    {
+        public BigInteger GeneratePrimeDigit();
+    }
+
     public enum PrimeTestMode
     {
         Ferm,
@@ -16,7 +21,7 @@ namespace Crypt1.Prime
         SoloveyShtrasen
 
     };
-    public class SimplePrime
+    public class SimplePrime: IPrime
     {
 
         private PrimeTestMode _mode;    // Тест для проверки простоты
@@ -80,7 +85,8 @@ namespace Crypt1.Prime
             {
                 count[0] = (byte)((int)count[0] | 1); 
 
-                count[count.Length - 1] = (byte)((int)count[count.Length - 1] & 0);
+                count[count.Length - 1] = (byte)((int)count[count.Length - 1] | 64);
+                count[count.Length - 1] = (byte)((int)count[count.Length - 1] & 127);   //Защита от Ферма
             }
             else
                 count[0] = (byte)((int)count[0] & 0x7F);

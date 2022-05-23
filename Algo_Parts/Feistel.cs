@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Crypt1.Algo_Parts
 {
-    public class Feistel : ISym_encrypt
+    public class Feistel : ISym_Encrypt
     {
         private IRound_generation round_keys_gen;
         private IF_function Feistel_f;
@@ -17,7 +17,7 @@ namespace Crypt1.Algo_Parts
             Feistel_f = f;
             round_keys = key.Round_Keys(orig_key);
         }
-        public byte[] decrypt(byte[] block)
+        public byte[] Decrypt(byte[] block)
         {
             int[] round_order = new int[16];
             for (int i = 0; i < 16; i++)
@@ -27,7 +27,7 @@ namespace Crypt1.Algo_Parts
             return crypt(block, round_order);
         }
 
-        public byte[] encrypt(byte[] block)
+        public byte[] Encrypt(byte[] block)
         {
             int[] round_order = new int[16];
             for (int i = 0; i < 16; i++)
