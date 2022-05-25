@@ -45,7 +45,7 @@ namespace Crypt1
                 byte[] kk = ASCIIEncoding.ASCII.GetBytes("12345678");
                 DES d = new DES(Mode.ECB, kk);
                 DES dcbc = new DES(Mode.CFB, kk);
-                RSAlg rsa = new RSAlg(0.98, 16, PrimeTestMode.Ferm);
+                RSAlg rsa = new RSAlg(0.98, 17, PrimeTestMode.Ferm);
                 byte[] word = ASCIIEncoding.ASCII.GetBytes("Baalt");
 
                 dcbc.SetIV();
@@ -66,6 +66,12 @@ namespace Crypt1
                     buffer = new byte[fstream.Length];
                     await fstream.ReadAsync(buffer, 0, buffer.Length);
 
+                }
+
+                var Dres = WienersАttack.WienerАttack(75668410412, 9626055260015);
+                if (Dres != BigInteger.Zero)
+                {
+                    Console.WriteLine($"D is {Dres}");
                 }
                 // Кодировка изображения, раскоментить при необходимости
                 /*var shift = d.Encrypt(buffer);
