@@ -45,7 +45,7 @@ namespace Crypt1
                 byte[] kk = ASCIIEncoding.ASCII.GetBytes("12345678");
                 DES d = new DES(Mode.ECB, kk);
                 DES dcbc = new DES(Mode.CFB, kk);
-                RSAlg rsa = new RSAlg(0.98, 17, PrimeTestMode.Ferm);
+                RSAlg rsa = new RSAlg(0.98, 15, PrimeTestMode.Ferm);
                 byte[] word = ASCIIEncoding.ASCII.GetBytes("Baalt");
 
                 dcbc.SetIV();
